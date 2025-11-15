@@ -1,0 +1,9 @@
+body { font-family: system-ui, Arial, sans-serif; margin: 0; }
+.nav { display: flex; gap: 1rem; padding: .75rem 1rem; background: #f2f2f2; }
+.nav a { text-decoration: none; color: #333; }
+.container { padding: 1rem; }
+.flashes { margin: 1rem; }
+.flash { padding: .5rem .75rem; border: 1px solid #ddd; border-radius: 4px; margin-bottom: .5rem; }
+.flash-warning { background: #fff7e6; border-color: #f0c36d; }
+.error { color: #c00; font-size: .9rem; }
+.form-group { margin-bottom: .75rem; }

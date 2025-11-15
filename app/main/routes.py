@@ -1,20 +1,12 @@
 from flask import Blueprint, render_template
-from app.forms import LoginForm
-from datetime import datetime
-from app.models import User
 
-main = Blueprint('main', __name__)
+main_bp = Blueprint("main", __name__, template_folder="../templates")
 
-@main.route('/')
-def home():
-    return
+@main_bp.route("/")
+def index():
+    return render_template("main/index.html")
 
-@main.route('/calling_db')
-def calling_db():
-    users = User.query.first()
-    return str(users)
-
-@main.route('/login')
-def login():
-    form = LoginForm()
-    return render_template('login.html', title='Login', form=form)
+@main_bp.route("/feature")
+def feature():
+    # Demo page showing base template usage
+    return render_template("main/feature.html")
