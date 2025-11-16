@@ -1,6 +1,8 @@
-# LMS Prototype (CMPE 131)
+# PeerLink
 
 A minimal Flask prototype to satisfy the project rubric: renders HTML stubs with a working base template, a demo feature page, and an `/auth/login` route that validates with WTForms and flashes “Not implemented” on POST.
+
+---
 
 ## Quick start
 
@@ -15,3 +17,13 @@ A minimal Flask prototype to satisfy the project rubric: renders HTML stubs with
 ### 3) Run
 `python run.py`
 #### Visit http://127.0.0.1:5000/
+
+---
+
+### Rendered Screenshots
+
+![](/app/images/Home_Page.png)
+
+![](/app/images/Feature_Page.png)
+
+![](/app/images/Login_Page.png)
