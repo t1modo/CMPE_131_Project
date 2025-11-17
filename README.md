@@ -1,5 +1,4 @@
-# PeerLink
-
+# Scanva
 A minimal Flask prototype to satisfy the project rubric: renders HTML stubs with a working base template, a demo feature page, and an `/auth/login` route that validates with WTForms and flashes “Not implemented” on POST.
 
 ---
