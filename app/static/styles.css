@@ -325,14 +325,14 @@ body {
 .grading-layout {
   display: grid;
   grid-template-columns: 1.3fr 1.4fr 1fr;
-  gap: 1rem;
+  gap: 1.25rem;
   min-height: 70vh;
 }
 
 .grading-panel {
   border: 2px solid #b59aff;
   border-radius: 8px;
-  padding: 0.75rem;
+  padding: 0.9rem 1rem;          /* slightly more breathing room */
   background: rgba(5, 6, 8, 0.92);
   display: flex;
   flex-direction: column;
@@ -349,8 +349,9 @@ body {
   flex: 1;
   border-radius: 6px;
   border: 1px solid #b59aff;
-  padding: 0.75rem;
-  margin-bottom: 0.75rem;
+  padding: 1.25rem;              /* 🔹 increased inner padding */
+  margin-bottom: 0.9rem;
+  min-height: 220px;             /* 🔹 ensures content isn't cramped */
 }
 
 .grade-form-wrapper {

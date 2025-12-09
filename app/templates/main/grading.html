@@ -2,33 +2,60 @@
 {% block title %}Scanva – Grading{% endblock %}
 
 {% block header_title %}
-  Dashboard
+  Dashboard (Instructor)
 {% endblock %}
 
 {% block content %}
 <div class="grading-layout">
-  <!-- Original column -->
+  <!-- Assignment file -->
   <section class="grading-panel">
-    <h2 class="panel-title">Original</h2>
+    <h2 class="panel-title">Assignment</h2>
     <div class="page-box">
-      <!-- Placeholder: you can replace with embedded PDF or rendered images -->
-      <p class="muted">Scanned page preview goes here.</p>
-      <p class="muted">Page 1 of 1</p>
+      {% if assignment.prompt_file_path %}
+        <p class="muted">Prompt PDF:</p>
+        <p>
+          <a
+            href="{{ url_for('main.uploaded_file', filename=assignment.prompt_file_path) }}"
+            class="small-link"
+            target="_blank"
+          >
+            View assignment file
+          </a>
+        </p>
+      {% else %}
+        <p class="muted">
+          No assignment file uploaded yet.
+        </p>
+      {% endif %}
     </div>
   </section>
 
-  <!-- Graded column -->
+  <!-- Student submission + grade form -->
   <section class="grading-panel">
-    <h2 class="panel-title">Graded</h2>
+    <h2 class="panel-title">Student Submission</h2>
     <div class="page-box">
       <p class="muted">
-        Annotations and marks appear on this side in the final version.
+        Student: {{ submission.student.email }}
       </p>
+      {% if submission.student_file_path %}
+        <p>
+          <a
+            href="{{ url_for('main.uploaded_file', filename=submission.student_file_path) }}"
+            class="small-link"
+            target="_blank"
+          >
+            View submitted PDF
+          </a>
+        </p>
+      {% else %}
+        <p class="muted">No submission file uploaded.</p>
+      {% endif %}
     </div>
 
     <div class="grade-form-wrapper">
-      <form method="POST">
+      <form method="POST" enctype="multipart/form-data">
         {{ form.hidden_tag() }}
+
         <div class="form-group">
           {{ form.total_score.label(class="form-label") }}
           {{ form.total_score(class="form-input") }}
@@ -36,16 +63,39 @@
             <div class="error">{{ err }}</div>
           {% endfor %}
         </div>
+
         <div class="form-group">
           {{ form.general_comment.label(class="form-label") }}
           {{ form.general_comment(class="form-textarea") }}
         </div>
-        <button type="submit" class="btn btn-primary">Save Grade</button>
+
+        <div class="form-group">
+          {{ form.graded_file.label(class="form-label") }}
+          {{ form.graded_file(class="form-input") }}
+          {% for err in form.graded_file.errors %}
+            <div class="error">{{ err }}</div>
+          {% endfor %}
+        </div>
+
+        {% if submission.graded_file_path %}
+          <p class="muted" style="margin-top:0.5rem;">
+            Current graded file:
+            <a
+              href="{{ url_for('main.uploaded_file', filename=submission.graded_file_path) }}"
+              class="small-link"
+              target="_blank"
+            >
+              {{ submission.graded_file_path }}
+            </a>
+          </p>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary">Save grade</button>
       </form>
     </div>
   </section>
 
-  <!-- Rubric column -->
+  <!-- Rubric (optional / future) -->
   <section class="grading-panel grading-rubric">
     <h2 class="panel-title">Rubric</h2>
     {% if rubric_items %}

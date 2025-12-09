@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..forms import LoginForm, RegistrationForm
-from ..models import db, User
+from ..models import db, User, Course, Enrollment
 
 auth_bp = Blueprint("auth", __name__, template_folder="../templates")
 
@@ -41,6 +41,18 @@ def register():
                 role=form.role.data,
             )
             db.session.add(user)
+            db.session.flush()  # get user.id before commit
+
+            # Auto-enroll user into all existing courses (demo context)
+            courses = Course.query.all()
+            for course in courses:
+                enrollment = Enrollment(
+                    user_id=user.id,
+                    course_id=course.id,
+                    role=user.role,
+                )
+                db.session.add(enrollment)
+
             db.session.commit()
             flash("Account created! You can now log in.", "success")
             return redirect(url_for("auth.login"))

@@ -11,6 +11,8 @@ from wtforms import (
 from wtforms.fields import DateField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Optional, NumberRange
 
+from flask_wtf.file import FileField, FileAllowed, FileRequired
+
 
 class LoginForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
@@ -45,10 +47,42 @@ class AssignmentForm(FlaskForm):
     submit = SubmitField("Save Assignment")
 
 
+class AssignmentFileForm(FlaskForm):
+    """Instructor assigns an assignment prompt file (PDF)."""
+    assignment_file = FileField(
+        "Assignment PDF",
+        validators=[
+            FileRequired(),
+            FileAllowed(["pdf"], "PDF files only."),
+        ],
+    )
+    submit = SubmitField("Upload Assignment File")
+
+
+class SubmissionUploadForm(FlaskForm):
+    """Student uploads their solution PDF for an assignment."""
+    student_file = FileField(
+        "Your Submission (PDF)",
+        validators=[
+            FileRequired(),
+            FileAllowed(["pdf"], "PDF files only."),
+        ],
+    )
+    submit = SubmitField("Upload Submission")
+
+
 class GradeForm(FlaskForm):
     total_score = FloatField(
         "Total Score",
         validators=[Optional(), NumberRange(min=0)],
     )
-    general_comment = TextAreaField("General Comment", validators=[Optional()])
+    general_comment = TextAreaField("Feedback / Comments", validators=[Optional()])
+
+    graded_file = FileField(
+        "Graded PDF (optional)",
+        validators=[
+            FileAllowed(["pdf"], "PDF files only."),
+        ],
+    )
+
     submit = SubmitField("Save Grade")

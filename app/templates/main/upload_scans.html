@@ -1,17 +1,19 @@
 {% extends "base.html" %}
-{% block title %}Scanva – Dashboard{% endblock %}
+{% block title %}Scanva – Instructor Dashboard{% endblock %}
 
 {% block header_title %}
-  Dashboard
+  Dashboard (Instructor)
 {% endblock %}
 
 {% block content %}
 <div class="dashboard">
-  <!-- Left: Courses -->
+
+  <!-- LEFT COLUMN — Courses -->
   <section class="dash-column dash-courses">
     <div class="dash-section-header">
       <span>Courses</span>
     </div>
+
     <ul class="course-list">
       {% for course in courses %}
         <li class="course-item {% if selected_course and course.id == selected_course.id %}active{% endif %}">
@@ -23,13 +25,16 @@
         <li class="empty-state">No courses yet.</li>
       {% endfor %}
     </ul>
+
     <div class="dash-footer-link">Show Archived</div>
   </section>
 
-  <!-- Middle: Assignments -->
+
+  <!-- MIDDLE COLUMN — Assignments -->
   <section class="dash-column dash-assignments">
     <div class="dash-section-header">
       <span>Assignments</span>
+
       {% if selected_course %}
         <a href="{{ url_for('main.create_assignment', course_id=selected_course.id) }}" class="small-link">
           + New
@@ -45,17 +50,37 @@
           <li class="assignment-item">
             <div class="assignment-main">
               <span class="assignment-title">{{ assignment.title }}</span>
+
               {% if assignment.due_date %}
-                <span class="assignment-meta">Due {{ assignment.due_date.strftime("%Y-%m-%d") }}</span>
+                <span class="assignment-meta">
+                  Due {{ assignment.due_date.strftime("%Y-%m-%d") }}
+                </span>
               {% endif %}
             </div>
+
             <div class="assignment-actions">
-              <!-- Icons are just text placeholders styled with CSS -->
-              <button class="icon-btn" title="Upload & Scan">⬆</button>
-              <button class="icon-btn" title="Edit">✏</button>
-              <button class="icon-btn" title="Delete">🗑</button>
+
+              <!-- Upload & Scan -->
+              <a
+                href="{{ url_for('main.upload_scans', assignment_id=assignment.id) }}"
+                class="icon-btn"
+                title="Upload &amp; Scan"
+              >⬆</a>
+
+              <!-- Edit assignment -->
+              <a
+                href="{{ url_for('main.edit_assignment', assignment_id=assignment.id) }}"
+                class="icon-btn"
+                title="Edit Assignment"
+              >✏</a>
+
+              <!-- Delete (future feature) -->
+              <button class="icon-btn" type="button" title="Delete (future)">
+                🗑
+              </button>
             </div>
           </li>
+
         {% else %}
           <li class="empty-state">No assignments yet for this course.</li>
         {% endfor %}
@@ -63,19 +88,18 @@
     {% endif %}
   </section>
 
-  <!-- Right: Upload & Scan shortcut (matches sketch text) -->
+
+  <!-- RIGHT COLUMN — Upload & Scan Information -->
   <section class="dash-column dash-upload">
     <div class="dash-section-header">
       <span>Upload &amp; Scan</span>
     </div>
+
     <p class="muted">
-      Select an assignment from the center column, then choose
-      <strong>Upload &amp; Scan</strong> to attach scans.
+      Choose an assignment in the middle column, then select
+      <strong>Upload &amp; Scan</strong> to attach scanned PDFs.
     </p>
-    <div class="upload-placeholder">
-      Upload &amp; Scan<br>
-      Upload &amp; Scan
-    </div>
   </section>
+
 </div>
 {% endblock %}

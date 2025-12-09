@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Scanva – Submissions{% endblock %}
+
+{% block header_title %}
+  Dashboard (Instructor)
+{% endblock %}
+
+{% block content %}
+<div class="center-wrapper">
+  <div class="auth-card" style="max-width: 720px;">
+    <h1 class="page-title">Submissions – {{ assignment.title }}</h1>
+    <p class="muted" style="margin-bottom: 1rem;">
+      Course: {{ assignment.course.code }}{% if assignment.course.title %} – {{ assignment.course.title }}{% endif %}
+    </p>
+
+    {% if not submissions %}
+      <p class="muted">
+        No submissions yet for this assignment.
+      </p>
+    {% else %}
+      <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+        <thead>
+          <tr style="border-bottom:1px solid #18263a;">
+            <th style="text-align:left; padding:0.3rem 0.25rem;">Student</th>
+            <th style="text-align:left; padding:0.3rem 0.25rem;">Status</th>
+            <th style="text-align:left; padding:0.3rem 0.25rem;">Score</th>
+            <th style="text-align:left; padding:0.3rem 0.25rem;">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sub in submissions %}
+            <tr style="border-bottom:1px solid #18263a;">
+              <td style="padding:0.3rem 0.25rem;">
+                {{ sub.student.email }}
+              </td>
+              <td style="padding:0.3rem 0.25rem;">
+                {% if not sub.student_file_path %}
+                  <span class="muted">No file uploaded</span>
+                {% elif sub.total_score is none %}
+                  <span class="muted">Submitted</span>
+                {% else %}
+                  <span class="muted">Graded</span>
+                {% endif %}
+              </td>
+              <td style="padding:0.3rem 0.25rem;">
+                {% if sub.total_score is not none %}
+                  {{ sub.total_score }}
+                {% else %}
+                  <span class="muted">—</span>
+                {% endif %}
+              </td>
+              <td style="padding:0.3rem 0.25rem;">
+                {% if sub.student_file_path %}
+                  <a
+                    href="{{ url_for('main.uploaded_file', filename=sub.student_file_path) }}"
+                    class="small-link"
+                    target="_blank"
+                  >
+                    View PDF
+                  </a>
+                  &nbsp;|&nbsp;
+                {% endif %}
+                <a
+                  href="{{ url_for('main.grade_submission', assignment_id=assignment.id, submission_id=sub.id) }}"
+                  class="small-link"
+                >
+                  Grade
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    <div class="button-row" style="margin-top:1rem;">
+      <a href="{{ url_for('main.dashboard', course_id=assignment.course_id) }}" class="btn btn-outline">
+        Back to dashboard
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

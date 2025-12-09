@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% block title %}Scanva – Instructor Dashboard{% endblock %}
+
+{% block header_title %}
+  Dashboard (Instructor)
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+  <!-- LEFT COLUMN — Courses -->
+  <section class="dash-column dash-courses">
+    <div class="dash-section-header">
+      <span>Courses</span>
+    </div>
+
+    <ul class="course-list">
+      {% for course in courses %}
+        <li class="course-item {% if selected_course and course.id == selected_course.id %}active{% endif %}">
+          <a href="{{ url_for('main.dashboard', course_id=course.id) }}">
+            {{ course.code }}
+          </a>
+        </li>
+      {% else %}
+        <li class="empty-state">No courses yet.</li>
+      {% endfor %}
+    </ul>
+
+    <div class="dash-footer-link">Show Archived</div>
+  </section>
+
+  <!-- MIDDLE COLUMN — Assignments -->
+  <section class="dash-column dash-assignments">
+    <div class="dash-section-header">
+      <span>Assignments</span>
+
+      {% if selected_course %}
+        <a href="{{ url_for('main.create_assignment', course_id=selected_course.id) }}" class="small-link">
+          + New
+        </a>
+      {% endif %}
+    </div>
+
+    {% if not selected_course %}
+      <p class="muted">Select a course to view its assignments.</p>
+    {% else %}
+      <ol class="assignment-list">
+        {% for assignment in assignments %}
+          <li class="assignment-item">
+            <div class="assignment-main">
+              <span class="assignment-title">{{ assignment.title }}</span>
+
+              <span class="assignment-meta">
+                {% if assignment.due_date %}
+                  Due {{ assignment.due_date.strftime("%Y-%m-%d") }} ·
+                {% endif %}
+                Submissions: {{ assignment.submissions|length }}
+              </span>
+            </div>
+
+            <div class="assignment-actions">
+              <!-- Assign file (prompt) -->
+              <a
+                href="{{ url_for('main.assign_file', assignment_id=assignment.id) }}"
+                class="icon-btn"
+                title="Assign File (Upload Prompt)"
+              >📄</a>
+
+              <!-- View submissions -->
+              <a
+                href="{{ url_for('main.list_submissions', assignment_id=assignment.id) }}"
+                class="icon-btn"
+                title="View Submissions"
+              >👁</a>
+
+              <!-- Edit assignment -->
+              <a
+                href="{{ url_for('main.edit_assignment', assignment_id=assignment.id) }}"
+                class="icon-btn"
+                title="Edit Assignment"
+              >✏</a>
+            </div>
+          </li>
+        {% else %}
+          <li class="empty-state">No assignments yet for this course.</li>
+        {% endfor %}
+      </ol>
+    {% endif %}
+  </section>
+
+  <!-- RIGHT COLUMN — Info -->
+  <section class="dash-column dash-upload">
+    <div class="dash-section-header">
+      <span>Workflow</span>
+    </div>
+
+    <p class="muted">
+      1. Create an assignment.<br>
+      2. Upload an assignment file (prompt) with <strong>📄 Assign File</strong>.<br>
+      3. Students see the assignment in their dashboard and upload their submissions.<br>
+      4. Use <strong>👁 View Submissions</strong> to review and grade.
+    </p>
+  </section>
+
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Scanva – Assign File{% endblock %}
+
+{% block header_title %}
+  Dashboard (Instructor)
+{% endblock %}
+
+{% block content %}
+<div class="center-wrapper">
+  <div class="auth-card">
+    <h1 class="page-title">Assign file</h1>
+    <p class="muted" style="margin-bottom: 1rem;">
+      Assignment: {{ assignment.title }} ({{ assignment.course.code }})
+    </p>
+
+    <form method="POST" enctype="multipart/form-data" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.assignment_file.label(class="form-label") }}
+        {{ form.assignment_file(class="form-input") }}
+        {% for err in form.assignment_file.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="button-row" style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary">
+          Upload Assignment File
+        </button>
+        <a href="{{ url_for('main.dashboard', course_id=assignment.course_id) }}" class="btn btn-outline">
+          Cancel
+        </a>
+      </div>
+    </form>
+
+    {% if assignment.prompt_file_path %}
+      <p class="muted" style="margin-top: 1rem;">
+        Current file:
+        <a href="{{ url_for('main.uploaded_file', filename=assignment.prompt_file_path) }}" class="small-link" target="_blank">
+          {{ assignment.prompt_file_path }}
+        </a>
+      </p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

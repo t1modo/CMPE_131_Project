@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Scanva – Submission{% endblock %}
+
+{% block header_title %}
+  {% if current_user.role == "instructor" %}
+    Dashboard (Instructor)
+  {% else %}
+    Dashboard (Student)
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="center-wrapper">
+  <div class="auth-card">
+    <h1 class="page-title">{{ assignment.title }} – Feedback</h1>
+    <p class="muted">
+      Course: {{ assignment.course.code }}{% if assignment.course.title %} – {{ assignment.course.title }}{% endif %}
+    </p>
+
+    <div class="form-group">
+      <div class="form-label">Your submission</div>
+      {% if submission.student_file_path %}
+        <p>
+          <a
+            href="{{ url_for('main.uploaded_file', filename=submission.student_file_path) }}"
+            class="small-link"
+            target="_blank"
+          >
+            View submitted PDF
+          </a>
+        </p>
+      {% else %}
+        <p class="muted">No submission file uploaded.</p>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Score</div>
+      {% if submission.total_score is not none %}
+        <p><strong>{{ submission.total_score }}</strong></p>
+      {% else %}
+        <p class="muted"><em>Not graded yet</em></p>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Instructor feedback</div>
+      {% if submission.general_comment %}
+        <p class="muted">{{ submission.general_comment }}</p>
+      {% else %}
+        <p class="muted"><em>No written feedback yet.</em></p>
+      {% endif %}
+    </div>
+
+    <div class="form-group">
+      <div class="form-label">Graded file</div>
+      {% if submission.graded_file_path %}
+        <p>
+          <a
+            href="{{ url_for('main.uploaded_file', filename=submission.graded_file_path) }}"
+            class="small-link"
+            target="_blank"
+          >
+            View graded PDF
+          </a>
+        </p>
+      {% else %}
+        <p class="muted"><em>No graded file uploaded yet.</em></p>
+      {% endif %}
+    </div>
+
+    <div class="button-row" style="margin-top: 1rem;">
+      <a href="{{ url_for('main.dashboard', course_id=assignment.course_id) }}" class="btn btn-outline">
+        Back to dashboard
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

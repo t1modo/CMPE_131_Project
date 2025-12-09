@@ -21,12 +21,11 @@ class User(db.Model, UserMixin):
 
 
 class Course(db.Model):
-    """Course, e.g., CMPE 131."""
+    """Course, e.g., CMPE 131-01."""
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(64), nullable=False)   # e.g., "CMPE 131-01"
+    code = db.Column(db.String(64), nullable=False)
     title = db.Column(db.String(255), nullable=True)
 
-    # Relationships
     enrollments = db.relationship("Enrollment", back_populates="course", cascade="all, delete-orphan")
     assignments = db.relationship("Assignment", back_populates="course", cascade="all, delete-orphan")
 
@@ -35,7 +34,7 @@ class Course(db.Model):
 
 
 class Enrollment(db.Model):
-    """Bridge table: which users belong to which courses (and as what role)."""
+    """Bridge: which users belong to which courses (and as what role)."""
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable=False)
@@ -46,13 +45,16 @@ class Enrollment(db.Model):
 
 
 class Assignment(db.Model):
-    """Assignment within a course."""
+    """Assignment within a course, optionally with an assigned (prompt) file."""
     id = db.Column(db.Integer, primary_key=True)
     course_id = db.Column(db.Integer, db.ForeignKey("course.id"), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     description = db.Column(db.Text, nullable=True)
     due_date = db.Column(db.DateTime, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    # Instructor-uploaded assignment prompt (PDF)
+    prompt_file_path = db.Column(db.String(512), nullable=True)
 
     course = db.relationship("Course", back_populates="assignments")
     submissions = db.relationship("Submission", back_populates="assignment", cascade="all, delete-orphan")
@@ -67,11 +69,23 @@ class Submission(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignment.id"), nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    submitted_at = db.Column(db.DateTime, nullable=True)
+    graded_at = db.Column(db.DateTime, nullable=True)
+
     total_score = db.Column(db.Float, nullable=True)
     general_comment = db.Column(db.Text, nullable=True)
-    # For now, just store a path to the uploaded PDF (page-splitting can be added later)
+
+    # Paths to files
+    # Old generic file_path kept for compatibility (not used now, but harmless)
     file_path = db.Column(db.String(512), nullable=True)
+
+    # Student's uploaded submission PDF
+    student_file_path = db.Column(db.String(512), nullable=True)
+
+    # Instructor's graded/annotated PDF
+    graded_file_path = db.Column(db.String(512), nullable=True)
 
     assignment = db.relationship("Assignment", back_populates="submissions")
     student = db.relationship("User", back_populates="submissions")
@@ -79,7 +93,7 @@ class Submission(db.Model):
 
 
 class RubricItem(db.Model):
-    """Single rubric line item for an assignment (e.g., 'Correct algorithm')."""
+    """Single rubric line item for an assignment."""
     id = db.Column(db.Integer, primary_key=True)
     assignment_id = db.Column(db.Integer, db.ForeignKey("assignment.id"), nullable=False)
     label = db.Column(db.String(255), nullable=False)

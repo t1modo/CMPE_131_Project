@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block title %}Scanva – Student Dashboard{% endblock %}
+
+{% block header_title %}
+  Dashboard (Student)
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+
+  <!-- LEFT COLUMN — Courses student is enrolled in -->
+  <section class="dash-column dash-courses">
+    <div class="dash-section-header">
+      <span>Courses</span>
+    </div>
+
+    <ul class="course-list">
+      {% for course in courses %}
+        <li class="course-item {% if selected_course and course.id == selected_course.id %}active{% endif %}">
+          <a href="{{ url_for('main.dashboard', course_id=course.id) }}">
+            {{ course.code }}
+          </a>
+        </li>
+      {% else %}
+        <li class="empty-state">
+          You are not enrolled in any courses yet.
+        </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- MIDDLE COLUMN — Assignments for selected course -->
+  <section class="dash-column dash-assignments">
+    <div class="dash-section-header">
+      <span>Your Assignments</span>
+    </div>
+
+    {% if not selected_course %}
+      <p class="muted">
+        Select a course on the left to see your assignments and submission status.
+      </p>
+    {% else %}
+      {% if not assignments %}
+        <p class="muted">
+          No assignments yet for {{ selected_course.code }}.
+        </p>
+      {% else %}
+        <table style="width:100%; border-collapse:collapse; font-size:0.95rem;">
+          <thead>
+            <tr style="border-bottom:1px solid #18263a;">
+              <th style="text-align:left; padding:0.3rem 0.25rem;">Assignment</th>
+              <th style="text-align:left; padding:0.3rem 0.25rem;">Status</th>
+              <th style="text-align:left; padding:0.3rem 0.25rem;">Score</th>
+              <th style="text-align:left; padding:0.3rem 0.25rem;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for assignment in assignments %}
+              {% set my_submissions = assignment.submissions
+                 | selectattr("student_id", "equalto", current_user.id)
+                 | list %}
+              {% set my_sub = my_submissions[0] if my_submissions else None %}
+
+              <tr style="border-bottom:1px solid #18263a;">
+                <td style="padding:0.3rem 0.25rem;">
+                  {{ assignment.title }}
+                </td>
+                <td style="padding:0.3rem 0.25rem;">
+                  {% if not my_sub %}
+                    <span class="muted">Not submitted</span>
+                  {% elif my_sub.total_score is none %}
+                    <span class="muted">Submitted</span>
+                  {% else %}
+                    <span class="muted">Graded</span>
+                  {% endif %}
+                </td>
+                <td style="padding:0.3rem 0.25rem;">
+                  {% if my_sub and my_sub.total_score is not none %}
+                    {{ my_sub.total_score }}
+                  {% else %}
+                    <span class="muted">—</span>
+                  {% endif %}
+                </td>
+                <td style="padding:0.3rem 0.25rem;">
+                  {% if not my_sub %}
+                    <a
+                      href="{{ url_for('main.submit_assignment', assignment_id=assignment.id) }}"
+                      class="small-link"
+                    >
+                      Upload submission
+                    </a>
+                  {% else %}
+                    <a
+                      href="{{ url_for('main.view_submission', submission_id=my_sub.id) }}"
+                      class="small-link"
+                    >
+                      View submission
+                    </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    {% endif %}
+  </section>
+
+  <!-- RIGHT COLUMN — Info/help -->
+  <section class="dash-column dash-upload">
+    <div class="dash-section-header">
+      <span>How Scanva Works</span>
+    </div>
+
+    <p class="muted">
+      When your instructor uploads an assignment file for a course you are enrolled in,
+      the assignment appears here. You can then upload your own submission. Once graded,
+      you will see your score and can view feedback and (optionally) a graded PDF.
+    </p>
+  </section>
+
+</div>
+{% endblock %}
