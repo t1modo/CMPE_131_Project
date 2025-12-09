@@ -1,21 +1,65 @@
 # Scanva
-A minimal Flask prototype to satisfy the project rubric: renders HTML stubs with a working base template, a demo feature page, and an `/auth/login` route that validates with WTForms and flashes “Not implemented” on POST.
+
+Scanva is a lightweight Flask-based learning management system that combines Canvas-style assignment distribution with Gradescope-style submission, grading, and feedback workflows.
+This Milestone 2 release implements a complete end-to-end prototype where:
+
+- Instructors create assignments, upload prompt PDFs, review student submissions, and provide grades and feedback.
+- Students view course assignments, upload their own PDFs, and receive graded feedback.
 
 ---
 
 ## Quick start
 
-
 ### 1) Create & activate a virtual environment (recommended)
+
 `python3 -m venv .venv`
-`source .venv/bin/activate`   # or for windows: `.venv\Scripts\activate`
+On mac: `source .venv/bin/activate` 
+On Windows: `.venv\Scripts\activate`
 
 ### 2) Install dependencies
+
 `pip install -r requirements.txt`
 
 ### 3) Run
+
 `python run.py`
-#### Visit http://127.0.0.1:5000/
+
+### 4) Test Instructions (Optional)
+
+`pytest`
+
+---
+
+# 👥 User Roles
+## 🟦 Instructor Role
+
+### Instructors can:
+
+- Create assignments
+
+- Upload assignment prompt files
+
+- View all student submissions
+
+- Grade, comment, and upload graded feedback PDFs
+
+- Navigate via the Instructor Dashboard
+
+## 🟩 Student Role
+
+- Students can:
+
+- View enrolled courses
+
+- View assignments per course
+
+- Download assignment prompt file
+
+- Upload submission PDF
+
+- View instructor feedback and grades
+
+- Navigate via the Student Dashboard
 
 ---
 
@@ -23,6 +67,12 @@ A minimal Flask prototype to satisfy the project rubric: renders HTML stubs with
 
 ![](/app/images/Home_Page.png)
 
-![](/app/images/Feature_Page.png)
-
 ![](/app/images/Login_Page.png)
+
+![](/app/images/SignUp_Page.png)
+
+![](/app/images/Dashboard_Instructor_Page.png)
+
+![](/app/images/Dashboard_Student_Page.png)
+
+![](/app/images/Create_Assignment_Page.png)
