@@ -1,28 +1,46 @@
 {% extends "base.html" %}
+{% block title %}Scanva – Login{% endblock %}
+
+{% block header_title %}
+  Scanva
+{% endblock %}
+
 {% block content %}
-  <h1>Log In</h1>
-  <form method="POST" novalidate>
-    {{ form.hidden_tag() }}
-    <div class="form-group">
-      {{ form.email.label }}<br>
-      {{ form.email(size=32) }}
-      {% for err in form.email.errors %}
-        <div class="error">{{ err }}</div>
-      {% endfor %}
-    </div>
+<div class="center-wrapper">
+  <div class="auth-card">
+    <h1 class="page-title">Login</h1>
 
-    <div class="form-group">
-      {{ form.password.label }}<br>
-      {{ form.password(size=32) }}
-      {% for err in form.password.errors %}
-        <div class="error">{{ err }}</div>
-      {% endfor %}
-    </div>
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
 
-    <div class="form-group">
-      <label>{{ form.remember() }} Remember me</label>
-    </div>
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-input") }}
+        {% for err in form.email.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
 
-    {{ form.submit() }}
-  </form>
+      <div class="form-group">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-input") }}
+        {% for err in form.password.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-row">
+        <label class="remember-label">
+          {{ form.remember() }} Remember me
+        </label>
+        <a class="ghost-link" href="#">Forgot password?</a>
+      </div>
+
+      <div class="button-row">
+        <button type="submit" class="btn btn-primary">Login</button>
+        <a href="{{ url_for('auth.register') }}" class="btn btn-outline">Create account</a>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock %}

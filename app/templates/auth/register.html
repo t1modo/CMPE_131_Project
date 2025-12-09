@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Scanva – Create Account{% endblock %}
+
+{% block header_title %}
+  Scanva
+{% endblock %}
+
+{% block content %}
+<div class="center-wrapper">
+  <div class="auth-card">
+    <h1 class="page-title">Create account</h1>
+
+    <form method="POST" novalidate>
+      {{ form.hidden_tag() }}
+
+      <div class="form-group">
+        {{ form.email.label(class="form-label") }}
+        {{ form.email(class="form-input") }}
+        {% for err in form.email.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.password.label(class="form-label") }}
+        {{ form.password(class="form-input") }}
+        {% for err in form.password.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.confirm_password.label(class="form-label") }}
+        {{ form.confirm_password(class="form-input") }}
+        {% for err in form.confirm_password.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="form-group">
+        {{ form.role.label(class="form-label") }}
+        {{ form.role(class="form-input") }}
+        {% for err in form.role.errors %}
+          <div class="error">{{ err }}</div>
+        {% endfor %}
+      </div>
+
+      <div class="button-row" style="margin-top: 1rem;">
+        <button type="submit" class="btn btn-primary">Create account</button>
+        <a href="{{ url_for('auth.login') }}" class="btn btn-outline">Back to login</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,15 +1,55 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
-from ..forms import LoginForm
+from flask_login import login_user, logout_user, login_required, current_user
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from ..forms import LoginForm, RegistrationForm
+from ..models import db, User
 
 auth_bp = Blueprint("auth", __name__, template_folder="../templates")
 
+
 @auth_bp.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.dashboard"))
+
     form = LoginForm()
     if form.validate_on_submit():
-        # We validated successfully; real auth not required for prototype
-        flash("Not implemented", "warning")
-        # Redirect so refresh doesn't resubmit the POST
-        return redirect(url_for("auth.login"))
-    # If GET or validation errors, render template (errors will show)
-    return render_template("auth/login.html", form=form, next=request.args.get("next"))
+        user = User.query.filter_by(email=form.email.data.lower()).first()
+        if user and check_password_hash(user.password_hash, form.password.data):
+            login_user(user, remember=form.remember.data)
+            next_url = request.args.get("next") or url_for("main.dashboard")
+            return redirect(next_url)
+        flash("Invalid email or password.", "warning")
+    return render_template("auth/login.html", form=form)
+
+
+@auth_bp.route("/register", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.dashboard"))
+
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        existing = User.query.filter_by(email=form.email.data.lower()).first()
+        if existing:
+            flash("An account with that email already exists.", "warning")
+        else:
+            user = User(
+                email=form.email.data.lower(),
+                password_hash=generate_password_hash(form.password.data),
+                role=form.role.data,
+            )
+            db.session.add(user)
+            db.session.commit()
+            flash("Account created! You can now log in.", "success")
+            return redirect(url_for("auth.login"))
+    return render_template("auth/register.html", form=form)
+
+
+@auth_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    flash("You have been logged out.", "info")
+    return redirect(url_for("auth.login"))
