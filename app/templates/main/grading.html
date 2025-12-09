@@ -1,1 +1,69 @@
-<!-- Tanav add code here -->
+{% extends "base.html" %}
+{% block title %}Scanva – Grading{% endblock %}
+
+{% block header_title %}
+  Dashboard
+{% endblock %}
+
+{% block content %}
+<div class="grading-layout">
+  <!-- Original column -->
+  <section class="grading-panel">
+    <h2 class="panel-title">Original</h2>
+    <div class="page-box">
+      <!-- Placeholder: you can replace with embedded PDF or rendered images -->
+      <p class="muted">Scanned page preview goes here.</p>
+      <p class="muted">Page 1 of 1</p>
+    </div>
+  </section>
+
+  <!-- Graded column -->
+  <section class="grading-panel">
+    <h2 class="panel-title">Graded</h2>
+    <div class="page-box">
+      <p class="muted">
+        Annotations and marks appear on this side in the final version.
+      </p>
+    </div>
+
+    <div class="grade-form-wrapper">
+      <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+          {{ form.total_score.label(class="form-label") }}
+          {{ form.total_score(class="form-input") }}
+          {% for err in form.total_score.errors %}
+            <div class="error">{{ err }}</div>
+          {% endfor %}
+        </div>
+        <div class="form-group">
+          {{ form.general_comment.label(class="form-label") }}
+          {{ form.general_comment(class="form-textarea") }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save Grade</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Rubric column -->
+  <section class="grading-panel grading-rubric">
+    <h2 class="panel-title">Rubric</h2>
+    {% if rubric_items %}
+      <ol class="rubric-list">
+        {% for item in rubric_items %}
+          <li class="rubric-item">
+            <div class="rubric-label">{{ item.label }}</div>
+            <div class="rubric-meta">
+              Max: {{ item.max_points }} pts
+            </div>
+          </li>
+        {% endfor %}
+      </ol>
+    {% else %}
+      <p class="muted">
+        No rubric defined for this assignment yet.
+      </p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
